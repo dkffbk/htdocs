@@ -13,6 +13,14 @@ class UsersTable
       $this->db = $mysql->connect();
    }
 
+   public function all()
+   {
+      $statement = $this->db->prepare("SELECT * FROM users");
+      $statement->execute();
+
+      return $statement->fetchAll(\PDO::FETCH_ASSOC);
+   }
+
    public function find($email, $password)
    {
       try {
@@ -40,5 +48,13 @@ class UsersTable
          echo $e->getMessage();
          exit();
       }
+   }
+
+   public function changePhoto($id, $photo)
+   {
+      $statement = $this->db->prepare("UPDATE users SET photo=:photo WHERE id=:id");
+      $statement->execute(['id' => $id, 'photo' => $photo]);
+
+      return $statement->rowCount();
    }
 }
