@@ -4,13 +4,13 @@ include("vendor/autoload.php");
 
 use Libs\Database\MySQL;
 use Libs\Database\UsersTable;
+use Helpers\Auth;
+
+$auth = AUTH::check();
 
 $table = new UsersTable(new MySQL);
-
 $users = $table->all();
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -23,29 +23,68 @@ $users = $table->all();
 </head>
 
 <body>
-   <div class="container">
-      <nav class="navbar navbar-dark bg-primary mt-3  rounded-2">
-         <div class="navbar-brand ms-4 fs-4">Admin</div>
-      </nav>
-   </div>
+   <nav class="navbar bg-primary mb-4 navvar-dark navbar-expand">
+      <div class="container">
+         <a href="#" class="navbar-brand">Admin</a>
+         <ul class="navbar-nav">
+            <li class="nav-item">
+               <a href="profile.php" class="nav-link">
+                  <?= $auth->name ?>
+               </a>
+            </li>
+            <li class="nav-item">
+               <a href="_actions/logout.php" class="nav-link">Logout</a>
+            </li>
+         </ul>
+      </div>
+   </nav>
 
    <div class="container mt-4">
       <table class="table table-striped table-bordered">
-         <thead>
+         <tr>
             <th>ID</th>
             <th>Name</th>
             <th>Email</th>
-            <th>Phone Number</th>
+            <th>Phone</th>
             <th>Role</th>
-         </thead>
+            <th>Actions</th>
+         </tr>
          <?php foreach ($users as $user): ?>
             <tr>
-               <td><?= $user['id'] ?></td>
-               <td><?= $user['name'] ?></td>
-               <td><?= $user['email'] ?></td>
-               <td><?= $user['phone'] ?></td>
-               <td class="text-center"><?= $user['role_id'] ?></td>
+               <td><?= $user->id ?></td>
+               <td><?= $user->name ?></td>
+               <td><?= $user->email ?></td>
+               <td><?= $user->phone ?></td>
+               <td>
+                  <?php if ($user->role_id == 3): ?>
+                     <span class="badge bg-success">
+                        <?= $user->role ?>
+                     </span>
+                  <?php elseif ($user->role_id == 2): ?>
+                     <span class="badge bg-primary">
+                        <?= $user->role ?>
+                     </span>
+                  <?php else: ?>
+                     <span class="badge bg-secondary">
+                        <?= $user->role ?>
+                     </span>
+                  <?php endif ?>
+               </td>
+               <td class="text-center">
+                  <div class="btn-group">
+                     <?php if ($user->suspended): ?>
+                        <a href="_actions/unsuspend.php?id=<?= $user->id ?>"
+                           class="btn btn-sm btn-warning">Ban</a>
+                     <?php else: ?>
+                        <a href="_actions/suspend.php?id=<?= $user->id ?>"
+                           class="btn btn-sm btn-outline-warning">Ban</a>
+                     <?php endif ?>
+
+                     <a href="_actions/delete.php?id=<?= $user->id ?>" class="btn btn-sm btn-outline-danger">Delete</a>
+                  </div>
+               </td>
             </tr>
+
          <?php endforeach ?>
       </table>
    </div>
