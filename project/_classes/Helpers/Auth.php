@@ -4,13 +4,15 @@ namespace Helpers;
 
 class Auth
 {
-   static function check()
-   {
-      session_start();
-      if (isset($_SESSION['user'])) {
-         return $_SESSION['user'];
-      }
+	static $loginUrl = '/index.php';
 
-      HTTP::redirect("/index.php", "auth=fail");
-   }
+	static function check()
+	{
+		session_start();
+		if (isset($_SESSION['user'])) {
+			return $_SESSION['user'];
+		} else {
+			HTTP::redirect(static::$loginUrl);
+		}
+	}
 }

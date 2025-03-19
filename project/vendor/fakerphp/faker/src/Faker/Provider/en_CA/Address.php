@@ -5,6 +5,7 @@ namespace Faker\Provider\en_CA;
 /**
  * Extend US class since most fields share the same format
  */
+
 class Address extends \Faker\Provider\en_US\Address
 {
     protected static $postcode = ['?#? #?#', '?#?-#?#', '?#?#?#'];
@@ -24,7 +25,7 @@ class Address extends \Faker\Provider\en_US\Address
     ];
 
     protected static $provinceAbbr = [
-        'AB', 'BC', 'MB', 'NB', 'NL', 'NT', 'NS', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT',
+        'AB', 'BC', 'MB', 'NB', 'NL', 'NT', 'NS', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT'
     ];
 
     protected static $addressFormats = [
@@ -49,7 +50,6 @@ class Address extends \Faker\Provider\en_US\Address
 
     /**
      * Returns a postalcode-safe letter
-     *
      * @example A1B 2C3
      */
     public static function randomPostcodeLetter()
@@ -64,8 +64,8 @@ class Address extends \Faker\Provider\en_US\Address
     {
         $string = static::randomElement(static::$postcode);
 
-        $string = preg_replace_callback('/\#/u', [static::class,  'randomDigit'], $string);
-        $string = preg_replace_callback('/\?/u', [static::class, 'randomPostcodeLetter'], $string);
+        $string = preg_replace_callback('/\#/u', 'static::randomDigit', $string);
+        $string = preg_replace_callback('/\?/u', 'static::randomPostcodeLetter', $string);
 
         return static::toUpper($string);
     }

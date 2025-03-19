@@ -1,11 +1,18 @@
 {
-  "require": {
-    "fakerphp/faker": "^1.24"
-  },
-  "autoload": {
-    "psr-4": {
-      "Helpers\\": "_classes/Helpers",
-      "Libs\\": "_classes/Libs"
+    "name": "eimg/project",
+    "authors": [
+        {
+            "name": "Ei Maung",
+            "email": "eimg@fairwayweb.com"
+        }
+    ],
+    "require": {
+        "fakerphp/faker": "^1.13"
+    },
+    "autoload": {
+        "psr-4": {
+            "Libs\\": "_classes/Libs/",
+            "Helpers\\": "_classes/Helpers/"
+        }
     }
-  }
 }

@@ -4,24 +4,32 @@ include("../vendor/autoload.php");
 
 use Libs\Database\MySQL;
 use Libs\Database\UsersTable;
-use Helpers\Auth;
 use Helpers\HTTP;
+use Helpers\Auth;
 
 $auth = Auth::check();
 
+$table = new UsersTable(new MySQL());
+
 $name = $_FILES['photo']['name'];
-$tmp_name = $_FILES['photo']['tmp_name'];
+$error = $_FILES['photo']['error'];
+$tmp = $_FILES['photo']['tmp_name'];
 $type = $_FILES['photo']['type'];
 
-if ($type == "image/jpeg" or $type == "image/png") {
-   move_uploaded_file($tmp_name, "photos/$name");
+if ($error) {
+	HTTP::redirect("/profile.php", "error=file");
+}
 
-   $table = new UsersTable(new MySQL);
-   $table->changePhoto($auth->id, $name);
+if ($type === "image/jpeg" or $type === "image/png") {
 
-   $auth->photo = $name;
+	$table->updatePhoto($auth->id, $name);
 
-   HTTP::redirect("/profile.php");
+	move_uploaded_file($tmp, __DIR__ . "/photos/$name");
+
+	$auth->photo = $name;
+	$_SESSION['user'] = $auth;
+
+	HTTP::redirect("/profile.php");
 } else {
-   HTTP::redirect("/profile.php", "error=type");
+	HTTP::redirect("/profile.php", "error=type");
 }

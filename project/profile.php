@@ -4,41 +4,65 @@ include("vendor/autoload.php");
 
 use Helpers\Auth;
 
-$user = Auth::check();
+$auth = Auth::check();
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Profile</title>
-   <link rel="stylesheet" href="css/bootstrap.min.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Profile</title>
+
+	<link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 
 <body>
-   <div class="container" style="max-width: 800px;">
-      <h1 class="h4 my-4">Profile</h1>
+	<div class="container">
+		<h1 class="mt-5 mb-5">
+			<?= $auth->name ?>
+			<span class="fw-normal text-muted">
+				(<?= $auth->role ?>)
+			</span>
+		</h1>
 
-      <?php if ($user->photo): ?>
-         <img src="_actions/photos/<?= $user->photo ?>" width="200" class="img-thumbnail mb-2">
+		<?php if (isset($_GET['error'])) : ?>
+			<div class="alert alert-warning">
+				Cannot upload file
+			</div>
+		<?php endif ?>
+
+		<?php if ($auth->photo): ?>
+         <img src="_actions/photos/<?= $auth->photo ?>" width="200" class="img-thumbnail mb-2">
       <?php endif ?>
 
-      <form action="_actions/upload.php" method="post" enctype="multipart/form-data" class="input-group mb-4">
-         <input type="file" name="photo" class="form-control">
-         <button class="btn btn-secondary">Upload</button>
-      </form>
-      <ul class="list-group mb-2">
-         <li class="list-group-item">Name: <?= $user->name ?></li>
-         <li class="list-group-item">Email: <?= $user->email ?></li>
-         <li class="list-group-item">Phone: <?= $user->phone ?></li>
-         <li class="list-group-item">Address: <?= $user->address ?></li>
-      </ul>
+		<form action="_actions/upload.php" method="post" enctype="multipart/form-data">
+			<div class="input-group mb-3">
+				<input type="file" name="photo" class="form-control">
+				<button class="btn btn-secondary">Upload</button>
+			</div>
+		</form>
 
-      <a href="_actions/logout.php" class="text-danger">Logout</a> |
-      <a href="admin.php">Admin</a>
-   </div>
+		<ul class="list-group">
+			<li class="list-group-item">
+				<b>Email:</b> <?= $auth->email ?>
+			</li>
+			<li class="list-group-item">
+				<b>Phone:</b> <?= $auth->phone ?>
+			</li>
+			<li class="list-group-item">
+				<b>Address:</b> <?= $auth->address ?>
+			</li>
+		</ul>
+		<br>
+
+		<?php if ($auth->role_id > 1) : ?>
+			<a href="admin.php">Manage Users</a> |
+		<?php endif ?>
+		<a href="_actions/logout.php" class="text-danger">Logout</a>
+	</div>
 </body>
 
 </html>
